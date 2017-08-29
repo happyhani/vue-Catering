@@ -65,7 +65,7 @@
 				<div class="detail-close" @click="detailShow=false">
 				    <i class="icon-close"></i>
 				</div>
-		    </div>
+		  </div>
 		</transition>
 	</div>
 </template>
@@ -73,23 +73,23 @@
 <script type="text/ecmascript">
   import star from '../star/star';
   export default {
-	props: { // 可以接收从外层传来的prop
-	  seller: {
-	    type: Object
-	  }
-	},
-	data () { // 实例化vue时，会遍历data中的变量，并添加getter和setter，当数据改变就会控制dom的显示隐藏
-	  return {
-		detailShow: false
-			
-	  };
-	},
-	created () {
-	  this.classMap = ['decrease','discount','special','invoice','guarantee'];
-	},
-	components: {
-		'v-star': star
-	}
+  	props: { // 可以接收从外层传来的prop
+  	  seller: {
+  	    type: Object
+  	  }
+  	},
+  	data () { // 实例化vue时，会遍历data中的变量，并添加getter和setter，当数据改变就会控制dom的显示隐藏
+  	  return {
+  		detailShow: false
+  			
+  	  };
+  	},
+  	created () {
+  	  this.classMap = ['decrease','discount','special','invoice','guarantee'];
+  	},
+  	components: {
+  		'v-star': star
+  	}
   };
 </script>
 

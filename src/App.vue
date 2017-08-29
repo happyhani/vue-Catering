@@ -13,9 +13,6 @@
       </div>
     </div>
     <router-view></router-view>
-    <div class="content">
-      I am content!
-    </div>
   </div>
 </template>
 
@@ -41,7 +38,7 @@
 				if (response.errno === ERR_OK) {
 					this.seller = response.data
 					// __ob__:Observer 是vue自动加的监听，如果数据修改了，他的修改能自动映射到dom上
-					console.log(this.seller);
+//					console.log(this.seller);
 					
 				}
 			});
