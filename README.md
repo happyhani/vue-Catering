@@ -49,3 +49,4 @@ better-scroll监听了touchstart和touchend这些，prevent default 取消默认
 解决：在点击的时候调用方法传入$event，在better-scroll中派发的事件和原生的有一个区别，插件中有event._constructed值为true，而原生的没有。
 tips:1、通过ref="element",this.$refs.element 来获取原生DOM 2、在操作改变DOM后，使用this.$nextTick的回调来更新。
 ## 7.9 (8/31/2017)
+购物车有很多状态，将他封装一个组件，先写最简单的初始状态。

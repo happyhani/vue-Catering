@@ -38,13 +38,15 @@
   	  	</li>
   	  </ul>
   	</div>
-    
+    <!--购物车组件-->
+    <v-shopcart></v-shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import icon from '../icon/icon';
   import BScroll from 'better-scroll';
+  import shopcart from '../shopcart/shopcart';
   
   const ERR_OK = 0;
   
@@ -124,7 +126,8 @@
 	    }
 	  },
 	  components: {
-	    'v-icon': icon
+	    'v-icon': icon,
+	    'v-shopcart': shopcart
 	  }
 	};
 </script>
