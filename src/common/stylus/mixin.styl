@@ -11,6 +11,10 @@ border-1px($color)
 	-webkit-transform: scaleY(0.5)
     transform: scaleY(0.5)
     
+border-none()
+  &:after
+   display: none 
+    
 /*处理2倍图 3倍图  mixin 函数*/
 bg-image($url)
   background-image: url($url + "@2x.png")
