@@ -32,6 +32,9 @@
   	  	  	  		<span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
   	  	  	  		<!--不是所有商品都有降价的，需要判断-->
   	  	  	  	</div>
+  	  	  	  	<div class="cartcontrol-wrapper">
+  	  	  	  	  <v-cartcontrol :food="food"></v-cartcontrol>
+  	  	  	  	</div>
   	  	  	  </div>
   	  	  	</li>
   	  	  </ul>
@@ -39,7 +42,7 @@
   	  </ul>
   	</div>
     <!--购物车组件 传递数据：配送费 和 起送费-->
-    <v-shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></v-shopcart>
+    <v-shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></v-shopcart>
   </div>
 </template>
 
@@ -47,6 +50,7 @@
   import icon from '../icon/icon';
   import BScroll from 'better-scroll';
   import shopcart from '../shopcart/shopcart';
+  import cartcontrol from '../cartcontrol/cartcontrol';
   
   const ERR_OK = 0;
   
@@ -74,6 +78,18 @@
 	      	}
 	      }
 	      return 0;
+	    },
+	    selectFoods () {
+	      // 加入购物车，选中的所有商品
+	      let foods = [];
+	      this.goods.forEach((good) => {
+	        good.foods.forEach((food) => {
+	          if (food.count) {
+	          	foods.push(food);
+	          }
+	        });
+	      });
+	      return foods;
 	    }
 	  },
 	  created () {
@@ -107,7 +123,8 @@
 	        click: true  // 设置后可以点击，默认派发了一个点击事件
 	      });
 	      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
-	        probeType: 3  // 实时监听位置
+	        probeType: 3,  // 实时监听位置
+	        click: true
 	      });
 	      this.foodsScroll.on('scroll', (pos) => {
 	        this.scrollY = Math.abs(Math.round(pos.y)); // pos一个对象，里边包含xy的位置。小数
@@ -127,7 +144,8 @@
 	  },
 	  components: {
 	    'v-icon': icon,
-	    'v-shopcart': shopcart
+	    'v-shopcart': shopcart,
+	    'v-cartcontrol': cartcontrol
 	  }
 	};
 </script>
@@ -215,4 +233,8 @@
               text-decoration: line-through
               font-size: 10px
               color: rgb(147, 153, 159)
+          .cartcontrol-wrapper
+            position: absolute
+            bottom: 0
+            right: 0 
 </style>
