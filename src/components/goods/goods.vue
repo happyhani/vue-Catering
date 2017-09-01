@@ -38,8 +38,8 @@
   	  	</li>
   	  </ul>
   	</div>
-    <!--购物车组件-->
-    <v-shopcart></v-shopcart>
+    <!--购物车组件 传递数据：配送费 和 起送费-->
+    <v-shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></v-shopcart>
   </div>
 </template>
 

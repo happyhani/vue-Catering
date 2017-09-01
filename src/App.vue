@@ -12,7 +12,7 @@
       	<router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 
@@ -39,7 +39,6 @@
 					this.seller = response.data
 					// __ob__:Observer 是vue自动加的监听，如果数据修改了，他的修改能自动映射到dom上
 //					console.log(this.seller);
-					
 				}
 			});
 		},
