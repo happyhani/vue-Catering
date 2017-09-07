@@ -81,7 +81,6 @@
   	data () { // 实例化vue时，会遍历data中的变量，并添加getter和setter，当数据改变就会控制dom的显示隐藏
   	  return {
   		detailShow: false
-  			
   	  };
   	},
   	created () {

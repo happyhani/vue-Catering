@@ -32,6 +32,8 @@
           this.food.count++;
         }
         console.log('cli//ck');
+        //this.$dispatch('cart.add', event.target); // 传递给父组件
+        this.$emit('cart', event.target);
       },
       decrCart (event) {
         if (!event._constructed) {
@@ -63,12 +65,12 @@
         transition: all .5s linear
     .roll-enter-active, .roll-leave-to
       opacity: 0
-      transform: translate3D(24px, 0, 0)
+      transform: translate3d(24px, 0, 0)
       .inner
         transform: rotateZ(180deg)
-    .roll-enter-to, .roll-leave-active
+    .roll-enter-to
       opacity: 1
-      transform: translate3D(0,0,0)
+      transform: translate3d(0, 0, 0)
       .inner
         transform: rotateZ(0)
     .cart-count

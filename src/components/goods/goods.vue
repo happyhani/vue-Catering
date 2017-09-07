@@ -18,7 +18,7 @@
   	  	<li v-for="item in goods" class="food-list food-list-hook">
   	  	  <h1 class="title">{{item.name}}</h1>
   	  	  <ul>
-  	  	  	<li v-for="food in item.foods" class="food-item border-1px">
+  	  	  	<li v-for="food in item.foods" class="food-item border-1px" @click="">
   	  	  	  <div class="icon">
   	  	  	    <img width="57" height="57" :src="food.icon"/>
   	  	  	  </div>
@@ -33,7 +33,7 @@
   	  	  	  		<!--不是所有商品都有降价的，需要判断-->
   	  	  	  	</div>
   	  	  	  	<div class="cartcontrol-wrapper">
-  	  	  	  	  <v-cartcontrol :food="food"></v-cartcontrol>
+  	  	  	  	  <v-cartcontrol :food="food" v-on:cart="cart"></v-cartcontrol>
   	  	  	  	</div>
   	  	  	  </div>
   	  	  	</li>
@@ -42,7 +42,7 @@
   	  </ul>
   	</div>
     <!--购物车组件 传递数据：配送费 和 起送费-->
-    <v-shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></v-shopcart>
+    <v-shopcart ref='shopcart' :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></v-shopcart>
   </div>
 </template>
 
@@ -140,7 +140,20 @@
 	      	this.listHeight.push(height);
 	      }
 	      // console.log(this.listHeight);
-	    }
+	    },
+	    // 小球掉落
+	    _drop (target) {
+	      // 解决动画比较卡，不让他立即执行，让他异步执行
+	      this.$nextTick(() => {
+	        this.$refs.shopcart.drop(target);
+//	        this.$refs.shopcart.beforeEnter(target);
+//	        this.$refs.shopcart.enter(target);
+//	        this.$refs.shopcart.afterEnter(target);
+	      });
+	    },
+	    cart (target) {
+        this._drop(target);
+      }
 	  },
 	  components: {
 	    'v-icon': icon,
@@ -196,6 +209,7 @@
         color: rgb(147, 153, 159)
         background: #f3f5f7
       .food-item
+        position: relative
         display: flex
         padding: 18px
         &:not(:last-of-type)
