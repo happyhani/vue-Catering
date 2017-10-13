@@ -89,3 +89,157 @@ totalCount大于0，这个点开收起的状态才有效。需要有一个变量
 父组件可以调用子组件方法，子组件不能调用父组件方法。
 如果方法可以被父组件调用的，命名方法时就用show(),如果是私有方法就用_show()前面加下划线。
 思考：food组件中，图片的高度是和屏幕宽度一样，是一个正方形，这里不能写死高度。如果不设置高度，加载图片时会闪动。这里需要怎么解决
+## 8.3 (9/18/2017)
+解决：正方形图片，如果不设置宽高，加载出来时会闪。
+```
+.image-header
+  position: relative
+  width: 100%
+  height: 0
+  padding-top: 100%  /*这里的关键*/
+  img
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+```
+上方代码.imager-header的样式放在动画的上面，否则动画执行完，左上角的返回按钮会出现在图片下方。
+点击cartcontrol减少组件的添加和减少时，需要阻止冒泡
+## 8.4 (9/27/2017)
+写好图片下第一格的样式，页面的内容会超出一屏，需要加上batter-scroll,且并不希望出现右侧的滚动条。
+· 一、
+```
+import BScroll from 'better-scroll';
+```
+· 二、绑定到相应元素上
+绑定到父级上，这个元素是视口的固定高度。内层子元素是滚动的.(这里一定要用$nextTick())
+## 8.5 (9/28/2017)
+```
+// 不传参数时，默认的就是event
+addFirst (event) {
+  if (!event._constructed) {
+    return;
+  }
+}
+```
+
+在cartcontrol组件中,$dispatch已经弃用，使用$emit
+```
+//this.$dispatch('cart.add', event.target); // 传递给父组件
+this.$emit('cart', event.target);
+```
+小球动画有问题：点击加入购物车后，该元素隐藏，小球找不到正确的位置。
+解决：购物车的消失也做成一个动画。这样他不是立马隐藏，他的位置就能被进行计算。
+
+shopcart组件中的小球动画需要再看。
+cartcontrol组件中的增加减少需要阻止冒泡，food组件的‘加入购物车’也做好加上阻止冒泡
+## 8.6 (10/9/2017)
+组件split：
+将一样的部分抽象成组件split，分割的组件。
+
+分割线和商品信息需要判断，如果没有info这个字段，就不显示。
+```
+v-show="food.info"
+```
+## 8.7 (10/9/2017)
+组件ratingselect：
+商品评价区块
+思考:需要一个变量去控制是否显示只看内容，一个变量去控制选择的类型，选择了全部还是推荐还是吐槽。
+还要去维护一个评价树的数组。还要维护一个描述，可以动态的传入配置（配置全部推荐吐槽，也可以是评价页的全部满意不满意）。
+代码：一、先设置几个props。1、ratings数组2、selectType选择类型3、onlyContent内容4、desc描述
+定义3个常量，如此可读性更高。
+二、html部分
+## 8.8 (10/9/2017)
+在food组件中准备好数据，传递给子组件。
+在data中设置好数据，再在show方法中初始化一下。因为这个组件是被多个商品所使用，当我们传入不同的商品的时候，我们希望这个状态保持一个初始化状态。所以在每次show的时候将this.selectType = ALL;this.onlyContent = true;
+样式：商品评价不能全padding，因为下方有一个贯穿横轴的横线。下方3个选项可以看成一个区块，所以不用再设置margin和padding等。
+3个选项都有2种状态，有公共样式，还有各自的背景色，切换2种状态就是positive和negative。
+## 8.9 8.10(10/10/2017)
+3个选择区块：active的时候字体是白色，背景颜色深。
+小对勾：switch有一个on的状态，当onlyContent为true时，显示为绿色。
+## 8.11 (10/10/2017)
+添加事件：1、按钮2、switch
+@click="select(2,$event)"这里子组件改变了，但是父组件并不知道，需要通知父组件的selectType发生变化。派发一个事件。this.$emit('ratingtype.select', type);
+onlyContent也是个基础类型，他的改变也不会影响到父组件。
+修改商品评价数量，之前是写死的假数据，这里修改为{{ratings.length}}
+正面评价和负面评价的数据用computed做筛选。
+```
+positives() {
+  return this.ratings.filter((rating) => {
+    return rating.rateType === POSITIVE;
+  });
+}
+```
+## 8.12 (10/10/2017)
+评价列表和列表数据联动。如果评价列表没有数据就会显示暂无数据的文案。
+判断当有评价数组且评价数组不为空时，渲染列表。
+## 8.13 (10/10/2017)
+评价列表样式.
+.rating-item使用了padding，设置.user的定位时。不设置top值时，padding值会影响他的位置。所以设置top，right值
+## 8.14 (10/10/2017)
+将选项和列表数据对应起来，rating这个字段代表了要渲染的数据，这个用一个小技巧：v-show的值设置为函数needShow(rating.rateType, rating.text)
+type关联3种类型，text关联下方小图标，只看有内容的列表。
+```
+needShow (type, text) {
+  if (this.onlyContent && !text) {
+    // 如果要只显示内容而且你没有内容，text字段没有数据。就直接过了
+    return false;
+  }
+  if (this.selectType === ALL) {
+    return true;
+  } else {
+    return type === this.selectType;
+  }
+}
+```
+此时点击类型和只显示内容的时候不起作用，之前子组件中使用了$emit，这里在父组件中添加监听事件。
+切换全部和优差评内容时，列表数据多时，页面并没有滚动。
+
+ this.$nextTick异步更新，改变数据的时候vue的DOM更新是异步的，放在一个更新队列里，在下一个更新周期，他的DOM才会更新
+
+## 8.15 (10/12/2017)
+当没有数据的时候，显示没有更多数据的文案。
+将日期时间戳改成日期，使用filter。这个格式化日期，可能会在很多地方使用，所以抽成一个date.js。
+思路：使用正则
+
+## 8.17 (10/12/2017)
+// 小技巧
+function padLeftZero (str) {
+  return ('00'+str).substr(str.length);
+}
+如果str是9,009从第一位开始截取就是09,
+如果str是12,0012从第二位开始截取就是12。
+
+总结：
+ratingselect组件中,不能this.selectType=type这么写。子组件不能修改父组件中的数据，这里使用了解决方法一，定义data数据。这是vue组件中的单向数据流:
+```
+data() {
+  return {
+    chooseType: this.selectType,
+    chooseContents: this.onlyContent
+  };
+}
+```
+
+```
+methods: {
+  select(type, event) {
+    if(!event._constructed) {
+      return;
+    }
+    
+    this.chooseType = type;
+    this.$emit('ratingtypeSelect', this.chooseType);
+  },
+  toggleContent(event) {
+    if(!event._constructed) {
+      return;
+    }
+    this.chooseContents = !this.onlyContent;
+    this.$emit('contentToggle', this.chooseContents);
+  }
+}
+```
+## 9.1 (10/13/2017)
+用到better-scroll，最外层有一个容器，内层容器高度超过外层高度时，会滚动。
