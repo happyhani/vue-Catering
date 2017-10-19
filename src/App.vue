@@ -12,7 +12,9 @@
       	<router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -22,6 +24,7 @@
 //	        clientWidth = docEl.clientWidth;
 //	    docEl.style.fontSize = clientWidth / 7.5 + 'px';
 //	})(document, window);
+  import {urlParse} from './common/js/util';
 	import header from './components/header/header.vue';
 	
 	const ERR_OK = 0;
@@ -29,14 +32,23 @@
 	export default {
 		data () {  // 不能定义为一个对象，因为组件会复用，如果修改了，每个引用组件都会被修改，所以定义为方法
 			return {
-				seller: {}
+				seller: {
+				  id: (() => {
+				    let queryParam = urlParse();
+				    console.log(queryParam.id);
+				    return queryParam.id;
+				  })()
+				}
 			};
 		},
 		created () {
-			this.$http.get('/api/seller').then((response) => {
+			this.$http.get('/api/seller?id=' + this.seller.id).then((response) => {
 				response = response.data;
 				if (response.errno === ERR_OK) {
-					this.seller = response.data
+					// this.seller = response.data; 不能直接赋值，这样会把this.seller.id给干掉。
+					// 参数一：最终接受的数据，最后返回的结果用空的{}. response.data中是不包含参数id的值的。这里是vue推荐的给数据增加属性的方法
+					this.seller = Object.assign({}, this.seller, response.data);
+					console.log(this.seller.id);
 					// __ob__:Observer 是vue自动加的监听，如果数据修改了，他的修改能自动映射到dom上
 //					console.log(this.seller);
 				}

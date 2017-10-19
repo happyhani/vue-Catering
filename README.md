@@ -243,3 +243,111 @@ methods: {
 ```
 ## 9.1 (10/13/2017)
 用到better-scroll，最外层有一个容器，内层容器高度超过外层高度时，会滚动。
+## 9.3 (10/13/2017)
+右侧服务态度等，在iphone5下，布局是错乱的。这里要加mediaquery
+## 9.4 (10/13/2017)
+这是推荐，只有向上的手指
+<div class="recommend" v-show="rating.recommend.length">
+ 
+</div>
+## 9.5 (10/13/2017)
+时间
+<div class="time">
+添加滚动：1、获取外层DOM 2、引入betterscroll 3、在拿到rating这个数据后进行初始化
+## 9.6 (10/13/2017)
+推荐下方有几个推荐点，很有可能内容多的话就排第二行，所以加上下边距
+
+在ratings页刷新的时候，会跳转到goods页，并且报错。因为设置了goods页为默认起始页。
+在ratings页刷新的时候，hash值没有刷新，会默认调用router.push(main.js)，进入goods页。
+ratings组件还没有渲染完但是路由跳进goods组件。会把评论组件的DOM移除，在切换到goods组件时，ratings组件的nextTick会执行，
+nextTick是异步执行，去回调执行。因为当前已经不在ratings组件下了，所以有警告：```vue.esm.js?65d7:479 [Vue warn]: Error in nextTick: "TypeError: Cannot read property 'children' of undefined" found in ---> <Ratings>```
+## 10.4 (10/16/2017)
+supports中的icon图片拷贝到组件中
+给页面加上滚动.Batter-scroll是严格执行,在DOM加载完毕后执行,而在created中并不一定能加载完DOM
+## 10.5 (10/16/2017)
+加上Batter-scroll之后,发现还是不能滚动,测试在this.$nextTick处添加代码```console.log(this.seller);```可以看到是空。随意当前页面高度没有被撑开。
+
+切换组件时可以滚动，但是刷新页面后不能滚动:
+mounted ()方法执行优先于watch。发现_initScroll已经被初始化了，所以他什么都不做。所以这里加上代码else{this.scroll.refresh()}
+一开始mounted ()方法执行，scroll没有计算正确，所以不能被滚动。紧接着‘seller’回调会执行，因为seller发生变化，又会执行_initScroll这个方法，这次会走到else分支，他会重新计算scroll并执行refresh方法。这时元素高度已经被撑开了，所以可以滚动。
+后期优化的时候再去看其他解决问题的方法。
+## 10.6 (10/16/2017)
+明天继续 看二叉树了
+## 10.6 (10/17/2017)
+明天继续 看二叉树了
+## 10.6 (10/18/2017)
+```
+_initPics () {
+  if (this.seller.pics) {
+    let picWidth = 120,
+        margin = 6,
+        width = (picWidth + margin) * this.seller.pics.length - margin;
+    this.$refs.picList.style.width = width + 'px';
+    this.$nextTick(() => {
+      if (!this.picScroll) {
+        this.picScroll = new BScroll(this.$refs.picWrapper, {
+          scrollX: true, // 横向滚动
+          eventPassthrough: 'vertical' // 保证外层竖向滚动的时候内层是横向滚动。
+        });
+      } else {
+        this.picScroll.refresh();
+      }
+    });
+  }
+}
+```
+better-scroll使用时要确保DOM渲染完。
+在使用props的属性时，一开始用到它是一个初始值。如果是异步更新的话，用watch去观测他的更新。如果viwe来回切换，它的一些属性不会再变化了，但是mounted会来回执行。
+## 10.7 (10/18/2017)
+商家信息：内容有折行。
+## 10.8 (10/18/2017)
+收藏商家.
+样式：红心和收藏或已收藏要对齐。
+逻辑：点击收藏后，刷新页面又是未收藏状态。要将状态存在localstorage中。
+## 10.9 (10/18/2017)
+每个商家是不同的。页面url中会有一个id值。
+在App.vue中:
+```
+data () {  // 不能定义为一个对象，因为组件会复用，如果修改了，每个引用组件都会被修改，所以定义为方法
+  return {
+    seller: {}
+  };
+}
+```
+增加util.js里面的方法来解析url。在App.vue中ajax传过去的参数中需要带上id值```this.$http.get('/api/seller?id=' + this.seller.id)```
+真实情况下：通过向后台传递不同的id值，他会返回不同的数据，从而渲染到页面。
+这时在created中`this.$http.get()`获取不到id值，读到的是undefined。
+官方文档中提议的解决方法：
+有时你想向已有对象上添加一些属性，例如使用 Object.assign() 或 _.extend() 方法来添加属性。但是，添加到对象上的新属性不会触发更新。在这种情况下可以创建一个新的对象，让它包含原对象的属性和新的属性：
+// 代替 `Object.assign(this.someObject, { a: 1, b: 2 })`
+```this.someObject = Object.assign({}, this.someObject, { a: 1, b: 2 })```
+## 10.10 (10/18/2017)
+不能这么写，因为不能区分不同商家的收藏信息。
+`localstorage.favorite.=this.favorite`
+这里再开发一个通用的localstorage的js库。
+之前在seller.vue中写死了favorite的值，这里从本地缓存读取。
+## 10.11 (10/19/2017)
+优化：页面在切换组件的时候，组件页面会跳一下，因为切换组件的时候，页面的DOM 会重新渲染。
+vue的生命周期会重新执行一遍，切换组件时会重新发起ajax请求，created会重新执行。
+例如：在goods组件中将商品加进购物车。点击评论再点击商品时发现之前加入购物车的，全部被清空，之前的状态全都没有了。
+解决方法： 
+```
+<keep-alive>
+  <router-view :seller="seller"></router-view>
+</keep-alive>
+```
+这样优化一下之后，只会发出一次请求，组件的状态也会被记住。
+这里还有一个好处，商家组件，初始化better-scroll的时候在watch观测seller的变化和mounted的hook的逻辑都要_initScroll.
+当初这么做的原因是因为在组件切换，再切换回商家组件的时候，watch中的seller不会被改变。seller的回调不会被执行，但是组件重新被渲染了，需要我们重新在mounted的hook里面重新进行初始化的逻辑。
+如果用keep-alive，这个逻辑就不会被重复执行，当tab在商家，在商家页面刷新的时候，我们会watch到seller的变化。接着当我们切换组件后再切换回商家组件时，mounted中的hook不会再重复执行了。
+
+keep-alive的实现原理：将组件缓存起来，当组件已经加载过，再切换组件的时候，如果组件已经加载过并保留在内存里，他就从内存里把组件的状态再恢复。
+
+只有mounted的时候，没有watch：
+在其他组件刷新后，再切换到商家组件后才起作用。在商家组件刷新后不起作用。
+只有watch的时候，没有mounted：
+刷新商家组件和组件间切换回商家组件之后，依然没问题。但是在其他组件刷新后，再切换到商家组件，better-scroll不起作用。
+总结：组件间切换，再切换回商家组件的时候，seller不会被改变，watch的seller回调不会被执行。但是组件被重新渲染，所以在mounted中去重新初始化scroll的逻辑。如果使用keep-alive，这个逻辑就不会被重复执行。
+情况1、刷新商家组件，watch到这个seller的变化，会进行scroll的初始化。此时再进行tabs的切换，就不会再重复执行mounted中的逻辑。
+情况2、一开始页面不在商家组件，在其他组件刷新，这时候seller已经加载了。这时候点击商家，不会调用watch的回调。这时走mounted去初始化这个scroll。这时再切走，再切回来，这个mounted的hook不会被执行。不会去频繁初始化scroll。
+以上是keep-alive带来的一些优化。

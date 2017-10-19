@@ -14,4 +14,4 @@ new Vue({
   template: '<App/>',
   components: { App }
 });
-router.push('/goods'); // 一进入显示商品组件
+// router.push('/goods'); // 一进入显示商品组件
