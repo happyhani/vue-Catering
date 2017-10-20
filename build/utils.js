@@ -4,9 +4,9 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 exports.assetsPath = function (_path) {
   var assetsSubDirectory = process.env.NODE_ENV === 'production'
-    ? config.build.assetsSubDirectory
+    ? config.build.assetsSubDirectory // 这里打包后build.js文件中已经设置为production。
     : config.dev.assetsSubDirectory
-  return path.posix.join(assetsSubDirectory, _path)
+  return path.posix.join(assetsSubDirectory, _path) // 将路径做拼接
 }
 
 exports.cssLoaders = function (options) {

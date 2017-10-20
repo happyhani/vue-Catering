@@ -351,3 +351,17 @@ keep-alive的实现原理：将组件缓存起来，当组件已经加载过，�
 情况1、刷新商家组件，watch到这个seller的变化，会进行scroll的初始化。此时再进行tabs的切换，就不会再重复执行mounted中的逻辑。
 情况2、一开始页面不在商家组件，在其他组件刷新，这时候seller已经加载了。这时候点击商家，不会调用watch的回调。这时走mounted去初始化这个scroll。这时再切走，再切回来，这个mounted的hook不会被执行。不会去频繁初始化scroll。
 以上是keep-alive带来的一些优化。
+
+## 11.1 (10/19/2017)
+打包：webapp。
+1、执行命令 `npm run build`
+2、在项目目录中生成`dist`文件夹
+3、探究这些文件是怎么生成的。打开build文件夹下的build.js
+4、webpack.prod.conf.js、config/index.js、utils.js
+查看了编译打包过程。需要启动http server来运行编译打包后的文件。不能用静态server，因为我们有请求数据。
+1、在根目录下创建文件prod.server.js
+写完了这个小型的httpserver，这个是我们测试用的。真实的环境是后端写完以后，将static静态目录扔过去。
+node prod.server.js
+
+生产模式下禁止调试：config/index -> build中。之后重新打包。压缩js上耗时较多。这里输出文件少了*.map文件
+ `productionSourceMap: false`

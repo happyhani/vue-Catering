@@ -5,10 +5,10 @@ module.exports = {
   build: {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../dist/index.html'),
-    assetsRoot: path.resolve(__dirname, '../dist'), // 输出文件路径
+    assetsRoot: path.resolve(__dirname, '../dist'), // 输出文件路径。要生成的目标就是dist目录
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    productionSourceMap: true,
+    productionSourceMap: true, // 生产环境下不能调试，设置为false
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
@@ -19,7 +19,8 @@ module.exports = {
     // View the bundle analyzer report after build finishes:
     // `npm run build --report`
     // Set to `true` or `false` to always turn it on or off
-    bundleAnalyzerReport: process.env.npm_config_report
+    bundleAnalyzerReport: process.env.npm_config_report,
+    port: 9000 // dev下有port，这里在build下也定义一个port
   },
   dev: {
     env: require('./dev.env'),
