@@ -3,7 +3,7 @@ root = true
 [*]
 charset = utf-8
 indent_style = space  
-indent_size = 2  				//2个空格缩进
-end_of_line = lf   				//lf 是linux和mac的换行风格
-insert_final_newline = true     //创建一个新文件会在文件末尾插入一个新行
-trim_trailing_whitespace = true //自动移除行尾多余空格
+indent_size = 2  				         // 2个空格缩进
+end_of_line = lf   				       // lf 是linux和mac的换行风格
+insert_final_newline = true      // 创建一个新文件会在文件末尾插入一个新行
+trim_trailing_whitespace = true  // 自动移除行尾多余空格

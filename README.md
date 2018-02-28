@@ -20,6 +20,16 @@ npm run build --report
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+## 项目文件
+build config文件 -- webpack配置相关
+node_modules -- npm install 安装的依赖代码库
+src -- 存放项目源码
+static -- 第三方库文件夹   .gitkeep文件是空的，保证static是空文件夹时，也可以提交到github上
+.babelrc -- es6语法转换为es5
+.editorconfig -- 编辑器的配置
+.eslintignore -- 忽略语法检查
+.eslintrc -- eslint的配置
+.gitignore -- 提交github时会忽略的文件
 
 ### css的预编译 stylus
 ### 前6章 header组件中一像素边框 背景模糊属性 使用axios获取数据 props组件间数据传递  评分star组件  弹窗蒙层
